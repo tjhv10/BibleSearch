@@ -76,7 +76,6 @@ def extract_sublist(start_string, end_string):
 
 def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
     results = []
-    print(chosen_books)
     try:
         with open("bible.txt", 'r') as file:
             flag = False
