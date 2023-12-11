@@ -52,7 +52,7 @@ def highlight_substring(main_string, substring):
     start_index = main_string.find(substring)
 
     if start_index != -1:
-        end_index = start_index + len(substring.strip(",.:"))
+        end_index = start_index + len(substring.strip(",.:;"))
         highlighted_string = (
                 main_string[:start_index]
                 + "\033[93m" + main_string[start_index:end_index]
