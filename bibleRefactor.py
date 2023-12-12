@@ -180,7 +180,7 @@ def get_strings_with_marker(file_path):
         print(f"File '{file_path}' not found.")
         return result_list
 def add_space_around_hyphen(input_string):
-    spaced_string = ' '.join(input_string.split('-'))  # Replace '־' with the Hebrew hyphen character
+    spaced_string = ' '.join(input_string.split('־'))  # Replace '־' with the Hebrew hyphen character
     return ' ' + spaced_string + ' '
 
 
@@ -201,5 +201,21 @@ def remove_first_rows(file_path):
 
     with open(file_path, 'w',encoding='utf-8') as file:
         file.writelines(remaining_lines)
+
+def replace_pattern_in_file(file_name):
+    def replace_pattern(text):
+        pattern = r'(\d+:\d+):(\w+)'
+        replaced_text = re.sub(pattern, r'\1 \2', text)
+        return replaced_text
+
+    with open(file_name, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    modified_lines = [replace_pattern(line) for line in lines]
+
+    with open(file_name, 'w', encoding='utf-8') as file:
+        file.writelines(modified_lines)
+
+
 file_path = 'NTtry.txt'
-process_file(file_path)
+replace_pattern_in_file(file_path)

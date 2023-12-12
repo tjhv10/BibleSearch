@@ -42,17 +42,16 @@ def extract_sublist(start_string, end_string,books):
         return books[start_index: end_index+1]
     else:
         return []
-def bestMatch(string, list_of_str, percent_of_accuracy):
+def bestMatch(string, list_of_str, current_book):
     maxMatchWord = ''
     spm = 0
     string = string.strip(",.:-").lower()
     for word in list_of_str:
         sp = similarity_percentage(word.strip(",.:-").lower(), string)
         if sp > spm:
-            if sp >= int(percent_of_accuracy):
-                maxMatchWord = word
-                spm = sp
-    return maxMatchWord
+            maxMatchWord = word
+            spm = sp
+    return maxMatchWord, spm,list_of_str,current_book
 
 
 def highlight_substring(main_string, substring):
@@ -93,7 +92,7 @@ def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
                         continue
                     verse_text = line.strip()
                     verse_parts_list = create_word_groups(num_of_words, verse_text)
-                    matchedPart = bestMatch(search_term, verse_parts_list, chosen_percent)
+                    matchedPart,max_percent,max_verse = bestMatch(search_term, verse_parts_list, current_book)
                     if matchedPart == '':
                         continue
                     current_verse = verse_text.split()[0].split(':')[1]
@@ -157,6 +156,9 @@ booksH = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 
 
 def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
     results = []
+    max_percent = 0
+    max_match = ''
+    max_book = ''
     try:
         with open("bibleH.txt", 'r',encoding='utf-8') as file:
             flag = False
@@ -174,14 +176,18 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
                         continue
                     verse_text = line.strip()
                     verse_parts_list = create_word_groups(num_of_words, verse_text)
-                    matchedPart = bestMatch(search_term, verse_parts_list, chosen_percent)
-                    if matchedPart == '':
+                    matchedPart, percent, max_verse, book = bestMatch(search_term, verse_parts_list, current_book)
+                    if max_percent<percent:
+                        max_percent = int(percent)
+                        max_book = book
+                        max_match = ' '.join(max_verse)
+                    if percent<int(chosen_percent):
                         continue
                     current_verse = verse_text.split()[0].split(':')[1]
                     current_chapter = verse_text.split()[0].split(':')[0]
                     words = verse_text.split()
                     results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart))
-
+        print('זהו הפסוק עם ההתאמה הטובה ביותר: '+max_book+' '+max_match + ' עם האחוזים: '+ str(max_percent))
         return results
 
     except FileNotFoundError:
@@ -240,7 +246,7 @@ def search_in_Hebrew():
             print(f"ספר: {result[0]}, פרק: {result[1]}, פסוק: {result[2]}")
             highlight_substringH(result[3], result[4])
     else:
-        print(f'אין תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת')
+        print(f'אין תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת. מומלץ להוריד את אחוזי הדיוק ולנסות שוב.')
 while 1:
     flag = False
     lang = input("האם אתה רוצה לחפש בעברית או אנגלית? בשביל עברית הכנס ע ובשביל אנגלית הכנס א. אם ברצונך לסיים הכנס ס: ")
