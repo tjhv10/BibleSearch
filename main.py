@@ -177,8 +177,8 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
                     verse_text = line.strip()
                     verse_parts_list = create_word_groups(num_of_words, verse_text)
                     matchedPart, percent, max_verse, book = bestMatch(search_term, verse_parts_list, current_book)
-                    if max_percent<percent:
-                        max_percent = int(percent)
+                    if max_percent < percent:
+                        max_percent = percent
                         max_book = book
                         max_match = ' '.join(max_verse)
                     if percent<int(chosen_percent):
@@ -187,7 +187,7 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
                     current_chapter = verse_text.split()[0].split(':')[0]
                     words = verse_text.split()
                     results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart))
-        print('זהו הפסוק עם ההתאמה הטובה ביותר: '+max_book+' '+max_match + ' עם האחוזים: '+ str(max_percent))
+        highlight_substringH('זהו הפסוק עם ההתאמה הטובה ביותר: '+max_book+' '+max_match + ' עם האחוזים: '+ str(int(max_percent)),max_book+' '+max_match)
         return results
 
     except FileNotFoundError:
