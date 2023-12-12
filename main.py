@@ -45,9 +45,9 @@ def extract_sublist(start_string, end_string,books):
 def bestMatch(string, list_of_str, percent_of_accuracy):
     maxMatchWord = ''
     spm = 0
-    string = string.strip(",.:").lower()
+    string = string.strip(",.:-").lower()
     for word in list_of_str:
-        sp = similarity_percentage(word.strip(",.:").lower(), string)
+        sp = similarity_percentage(word.strip(",.:-").lower(), string)
         if sp > spm:
             if sp >= int(percent_of_accuracy):
                 maxMatchWord = word
@@ -192,7 +192,7 @@ def highlight_substringH(main_string, substring):
     start_index = main_string.find(substring)
 
     if start_index != -1:
-        end_index = start_index + len(substring.strip(",.:;"))
+        end_index = start_index + len(substring.strip(",.:;-"))
         highlighted_string = (
                 main_string[:start_index]
                 + "\033[93m" + main_string[start_index:end_index]

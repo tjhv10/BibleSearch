@@ -179,13 +179,27 @@ def get_strings_with_marker(file_path):
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
         return result_list
+def add_space_around_hyphen(input_string):
+    spaced_string = ' '.join(input_string.split('-'))  # Replace '־' with the Hebrew hyphen character
+    return ' ' + spaced_string + ' '
+
+
+def process_file(file_name):
+    with open(file_name, 'r', encoding='utf-8') as file:
+        content = file.read()
+
+    modified_content = add_space_around_hyphen(content)
+
+    with open(file_name, 'w', encoding='utf-8') as file:
+        file.write(modified_content)
+def remove_first_rows(file_path):
+    with open(file_path, 'r',encoding='utf-8') as file:
+        lines = file.readlines()
+
+    # Remove the specified number of rows
+    remaining_lines = lines[30775:]
+
+    with open(file_path, 'w',encoding='utf-8') as file:
+        file.writelines(remaining_lines)
 file_path = 'NTtry.txt'
-print(get_strings_with_marker(file_path))
-# remove_vocalization_from_file(file_path)
-# delete_rows_from_file(file_path)
-# add_number_to_chapters(file_path)
-# print_number_string_pairs(file_path)
-# convert_hebrew_in_file(file_path)
-# add_number_to_file(file_path)
-# process_file(file_path)
-# remove_short_lines(file_path)
+process_file(file_path)
