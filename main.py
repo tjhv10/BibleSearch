@@ -1,4 +1,4 @@
-
+import time
 from difflib import SequenceMatcher
 
 books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
@@ -47,10 +47,11 @@ def bestMatch(string, list_of_str, current_book,current_verse):
     spm = 0
     string = string.strip(",.:-").lower()
     for word in list_of_str:
-        sp = similarity_percentage(word.strip(",.:-").lower(), string)
-        if sp > spm:
-            maxMatchWord = word
-            spm = sp
+        # if word[:1].lower()==string[:1].lower():
+            sp = similarity_percentage(word.strip(",.:-").lower(), string)
+            if sp > spm:
+                maxMatchWord = word
+                spm = sp
     return maxMatchWord, spm,current_book,current_verse
 
 
@@ -68,9 +69,6 @@ def highlight_substring(main_string, substring):
         print("Full Verse: " + highlighted_string)
     else:
         print("Full Verse: " + main_string)
-
-
-
 
 
 def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
@@ -143,9 +141,12 @@ def search_in_English():
         end_book = input("Enter the book that you want to end your search: ")
         while end_book not in books:
             end_book = input("This book is not in the books list, try again: ")
+    start_time = time.time()
     search_results,count = search_in_bible(search_input, count_words(search_input), percent, extract_sublist(start_book, end_book,books))
+    end_time = time.time()
     if search_results:
         print(str(count) + " results came back")
+        print("Time took to search is: "+str(end_time-start_time)+" seconds")
         print(f"Results for '{search_input}':")
         for result in search_results:
             print(f"Book: {result[0]}, Chapter: {result[1]}, Verse: {result[2]}")
@@ -248,9 +249,12 @@ def search_in_Hebrew():
         end_book = input("הכנס ספר שאתה רוצה לסיים לחפש אחריו: ")
         while end_book not in booksH:
             end_book = input("הספר לא קיים, נסה שוב: ")
+    start_time = time.time()
     search_results,count = search_in_bibleH(search_input, count_words(search_input), percent,extract_sublist(start_book, end_book,booksH))
+    end_time = time.time()
     if search_results:
         print(str(count) + " תוצאות חזרו")
+        print("הזמן שלקח לחפש הוא: " + str(end_time - start_time) + " שניות")
         print(f'תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת')
         for result in search_results:
             print(f"ספר: {result[0]}, פרק: {result[1]}, פסוק: {result[2]}")
@@ -269,4 +273,4 @@ while 1:
     if lang == 'ס':
         break
     if not flag:
-        input("לא בחרת שפה נכונה, לחץ אנטר ונסה שוב:")
+        input("לא בחרת שפה נכונה, לחץ אנטר ונסה שוב")
