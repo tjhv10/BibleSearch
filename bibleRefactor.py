@@ -215,7 +215,13 @@ def replace_pattern_in_file(file_name):
 
     with open(file_name, 'w', encoding='utf-8') as file:
         file.writelines(modified_lines)
+def remove_last_colon(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
 
-
-file_path = 'NTtry.txt'
-replace_pattern_in_file(file_path)
+    with open(file_path, 'w', encoding='utf-8') as file:
+        for line in lines:
+            if line.rstrip().endswith('׃'):
+                line = line.rstrip()[:-1] + '\n'
+            file.write(line)
+file_path = 'bibleH.txt'

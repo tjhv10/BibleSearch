@@ -47,7 +47,7 @@ def bestMatch(string, list_of_str, current_book,current_verse):
     spm = 0
     string = string.strip(",.:-").lower()
     for word in list_of_str:
-        # if word[:1].lower()==string[:1].lower():
+        if word[:1].lower()==string[:1].lower():
             sp = similarity_percentage(word.strip(",.:-").lower(), string)
             if sp > spm:
                 maxMatchWord = word
@@ -144,9 +144,9 @@ def search_in_English():
     start_time = time.time()
     search_results,count = search_in_bible(search_input, count_words(search_input), percent, extract_sublist(start_book, end_book,books))
     end_time = time.time()
+    print("Time took to search is: " + str(end_time - start_time) + " seconds")
     if search_results:
         print(str(count) + " results came back")
-        print("Time took to search is: "+str(end_time-start_time)+" seconds")
         print(f"Results for '{search_input}':")
         for result in search_results:
             print(f"Book: {result[0]}, Chapter: {result[1]}, Verse: {result[2]}")
@@ -252,9 +252,9 @@ def search_in_Hebrew():
     start_time = time.time()
     search_results,count = search_in_bibleH(search_input, count_words(search_input), percent,extract_sublist(start_book, end_book,booksH))
     end_time = time.time()
+    print("הזמן שלקח לחפש הוא: " + str(end_time - start_time) + " שניות")
     if search_results:
         print(str(count) + " תוצאות חזרו")
-        print("הזמן שלקח לחפש הוא: " + str(end_time - start_time) + " שניות")
         print(f'תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת')
         for result in search_results:
             print(f"ספר: {result[0]}, פרק: {result[1]}, פסוק: {result[2]}")
