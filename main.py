@@ -47,7 +47,7 @@ def bestMatch(string, list_of_str, current_book,current_verse):
     spm = 0
     string = string.strip(",.:-").lower()
     for word in list_of_str:
-        if word[:1].lower()==string[:1].lower():
+        # if word[:1].lower()==string[:1].lower(): #For faster but worst search
             sp = similarity_percentage(word.strip(",.:-").lower(), string)
             if sp > spm:
                 maxMatchWord = word
