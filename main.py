@@ -169,6 +169,7 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
     max_percent = 0
     max_match = ''
     max_book = ''
+    max_verse = ''
     try:
         with open("bibleH.txt", 'r',encoding='utf-8') as file:
             flag = False
@@ -261,16 +262,16 @@ def search_in_Hebrew():
             highlight_substringH(result[3], result[4])
     else:
         print(f'אין תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת. מומלץ להוריד את אחוזי הדיוק ולנסות שוב.')
-while 1:
-    flag = False
-    lang = input("האם אתה רוצה לחפש בעברית או אנגלית? בשביל עברית הכנס ע ובשביל אנגלית הכנס e. אם ברצונך לסיים הכנס ס: ")
-    if lang =='ע':
-        search_in_Hebrew()
-        flag = True
-    if lang == 'e':
-        search_in_English()
-        flag = True
-    if lang == 'ס':
-        break
-    if not flag:
-        input("לא בחרת שפה נכונה, לחץ אנטר ונסה שוב")
+# while 1:
+#     flag = False
+#     lang = input("האם אתה רוצה לחפש בעברית או אנגלית? בשביל עברית הכנס ע ובשביל אנגלית הכנס e. אם ברצונך לסיים הכנס ס: ")
+#     if lang =='ע':
+#         search_in_Hebrew()
+#         flag = True
+#     if lang == 'e':
+#         search_in_English()
+#         flag = True
+#     if lang == 'ס':
+#         break
+#     if not flag:
+#         input("לא בחרת שפה נכונה, לחץ אנטר ונסה שוב")
