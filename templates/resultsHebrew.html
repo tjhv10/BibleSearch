@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <title>Search Results</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="best-match">
+        <h2>ההתאמה הטובה ביותר</h2>
+        {% if best_match %}
+            <p><strong>ספר:</strong> {{ best_match[0] }}</p>
+            <p><strong>פסוק:</strong> {{ best_match[1] }}</p>
+            <p><strong>דיוק:</strong> {{ best_match[2] }}%</p>
+        {% endif %}
+    </div>
+<div>
+    <button onclick="goBack()" class="btn">חזור לחיפוש</button>
+    <h1 class="title-headingW">תוצאות החיפוש</h1>
+    {% if results %}
+        <h1 class="title-headingW">{{ results|length }} תוצאות נמצאו:</h1>
+        <ul>
+            {% for result in results %}
+                <li>
+                    <strong>ספר:</strong> {{ result[0] }}<br>
+                    <strong>פרק:</strong> {{ result[1] }}<br>
+                    <strong>פסוק:</strong> {{ result[2] }}<br>
+                    <strong>טקסט:</strong> {{ result[3] }}<br>
+                    <strong>החלק המתאים:</strong> <span class="matched-part">{{ result[4].strip(",:.") }}</span><br><br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>לא נמצאו תוצאות.</p>
+    {% endif %}
+        </div>
+        <script>
+            function goBack() {
+                    window.history.back();
+                }
+        </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+/* Existing button styles */
+.btn {
+    display: inline-block;
+    font-weight: bold;
+    padding: 8px 8px;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 75px;
+    width: 125px;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+body {
+    background-color: #000000;
+    width: 80%; /* Set your desired width */
+    margin: 0 auto; /* This centers the body horizontally */
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Style for the best match section */
+.best-match {
+    font-size: 40px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Styles for best match elements */
+.best-match p {
+    margin: 5px 0;
+}
+
+/* Style for the list */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for each list item (result) */
+li {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 40px;
+}
+
+/* Styles for individual result fields */
+li strong {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+/* Style for the matched part */
+li .matched-part {
+    color: #007bff;
+    font-style: italic;
+    font-size: 40px;
+}
+
+h1 {
+    color: #000000;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Form styles */
+select,
+.form-input{
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+.title-heading {
+    margin-bottom: 20px;
+    font-size: 50px;
+}
+.title-headingW {
+    margin-bottom: 20px;
+    font-size: 50px;
+    color: white;
+}
+
+.search-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.long-bar {
+    width: calc(70% - 20px); /* Adjust width as needed */
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.search-term-container {
+    margin-bottom: 100px;
+    justify-content: center;
+    align-items: center;
+    clear: both; /* Ensures the search box is placed above other elements */
+}
+
+.form-row {
+    margin-bottom: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Allows items to wrap if they exceed the width */
+    gap: 10px; /* Adjust the gap between form elements */
+}

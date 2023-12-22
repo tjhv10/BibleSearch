@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bible Search</title>
+</head>
+<body>
+    <div class="top-bar">
+        <h1 class="title-heading">Bible Search</h1>
+        <form action="/search" method="post" class="search-form">
+            <div class="long-bar">
+                <input type="text" id="search_term"  name="search_term" class="long-bar" placeholder="Search term...">
+            </div>
+            <div class="form-row">
+            <div>
+                <label for="language" class="form-label">Select Language:</label>
+                <select name="language" id="language" class="form-input">
+                    <option value="Hebrew">Hebrew</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="start_book" class="form-label">Select Start Book:</label>
+                <select name="start_book" id="start_book" class="form-input">
+                    <!-- Options will be dynamically populated based on the selected language -->
+                </select>
+            </div>
+
+            <div>
+                <label for="end_book" class="form-label">Select End Book:</label>
+                <select name="end_book" id="end_book" class="form-input">
+                    <!-- Options will be dynamically populated based on the selected language -->
+                </select>
+            </div>
+
+            <div>
+                <label for="accuracy" class="form-label">Enter Accuracy (%):</label>
+                <input type="text" id="accuracy" name="accuracy" class="form-input" value="85">
+            </div>
+                <div class="button-container">
+            <input type="submit" value="Search" class="btn">
+            <input type="button" value="Reset" onclick="resetForm()" class="btn">
+                </div>
+        </div>
+        </form>
+    </div>
+    <script>
+        function resetForm() {
+        // Reset the language selection to the default value
+        languageSelect.value = 'Hebrew';
+
+        // Update the book options to reflect the default language selection
+        updateBookOptions();
+
+        // Reset other form elements as needed
+        document.getElementById('search_term').value = ''; // Reset search term field
+        document.getElementById('accuracy').value = '85'; // Reset accuracy field
+    }
+
+        function goBack() {
+            window.history.back();
+        }
+        // JavaScript to dynamically change the options for start and end books
+        const languageSelect = document.getElementById('language');
+        const startBookSelect = document.getElementById('start_book');
+        const endBookSelect = document.getElementById('end_book');
+
+        const englishBooks = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
+    '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs',
+    'Ecclesiastes', 'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations', 'Ezekiel', 'Daniel', 'Hosea', 'Joel',
+    'Amos', 'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Matthew',
+    'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians', 'Galatians', 'Ephesians', 'Philippians',
+    'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy', '2 Timothy', 'Titus', 'Philemon', 'Hebrews',
+    'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude', 'Revelation'];
+
+        const hebrewBooks = [
+            'בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 'יהושוע', 'שופטים', 'שמואל א', 'שמואל ב', 'מלכים א', 'מלכים ב', 'ישעיה',
+         'ירמיה', 'יחזקאל', 'הושע', 'יואל', 'עמוס', 'עובדיה', 'יונה', 'מיכה', 'נחום', 'חבקוק', 'צפניה', 'חגי', 'זכריה',
+         'מלאכי', 'תהילים', 'משלי', 'איוב', 'שיר השירים', 'רות', 'איכה', 'קהלת', 'אסתר', 'דניאל', 'עזרא', 'נחמיה',
+         'דברי הימים א', 'דברי הימים ב', 'מתי', 'מרקוס', 'לוקס', 'יוחנן', 'מעשי השליחים', 'אל הרומים', 'הראשונה אל הקורינתים',
+         'השניה אל הקורינתים', 'אל הגלטים', 'אל האפסים', 'אל הפיליפים', 'אל הקולוסים', 'הראשונה אל התסלוניקים',
+         'השניה אל התסלוניקים', 'הראשונה אל טימותיאוס', 'השניה אל טימותיאוס', 'אל טיטוס', 'אל פילימון', 'אל העברים', 'אגרת יעקב',
+         'הראשונה לכיפא', 'השניה לכיפא', 'הראשונה ליוחנן', 'השניה ליוחנן', 'השלישית ליוחנן', 'איגרת יהודה', 'התגלות'
+        ];
+        function updateBookOptions() {
+    const selectedLanguage = languageSelect.value;
+    const books = selectedLanguage === 'English' ? englishBooks : hebrewBooks;
+
+    // Clear previous options
+    startBookSelect.innerHTML = '';
+    endBookSelect.innerHTML = '';
+
+    // Add new options
+    books.forEach(book => {
+        const option = document.createElement('option');
+        option.value = book;
+        option.textContent = book;
+        startBookSelect.appendChild(option);
+        endBookSelect.appendChild(option.cloneNode(true));
+    });
+
+    // Set default selection to the last book
+    endBookSelect.selectedIndex = books.length - 1;
+}
+
+        // Event listener for language selection change
+        languageSelect.addEventListener('change', updateBookOptions);
+
+        // Initial population of book options based on default language selection
+        updateBookOptions();
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        if (isMobileDevice()) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'static/stylesM.css'; // Replace with your mobile CSS file path
+    document.head.appendChild(link);
+} else {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'static/styles.css'; // Replace with your desktop CSS file path
+    document.head.appendChild(link);
+}
+    </script>
+</body>
+</html>
