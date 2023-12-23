@@ -129,13 +129,31 @@ select,
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
+/* CSS for the search bar */
 .long-bar {
-    width: calc(70% - 20px); /* Adjust width as needed */
-    padding: 8px;
-    border-radius: 4px;
-    margin-bottom: 10px;
+  position: relative;
+  width: 70%; /* Adjust width as needed */
+  margin: 20px; /* Add margin for spacing */
 }
+
+.long-bar-input {
+  width: 100%; /* Take up the entire width of .long-bar */
+  padding: 10px 10px 10px 40px; /* Adjust padding for the icon */
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Rounded corners */
+  outline: none;
+  font-size: 16px;
+  background-image: url('img.png'); /* Replace 'path/to/magnifying-glass-icon.png' with your icon path */
+  background-size: 20px 20px; /* Adjust icon size */
+  background-position: 10px center; /* Position the icon */
+  background-repeat: no-repeat;
+}
+
+.long-bar-input:focus {
+  border-color: #007bff; /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
+}
+
 
 .search-term-container {
     margin-bottom: 100px;

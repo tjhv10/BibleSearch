@@ -1,5 +1,62 @@
 import time
 from difflib import SequenceMatcher
+import pickle
+import os
+
+def is_hebrew(text):
+    hebrew_range = (0x0590, 0x05FF)  # Unicode range for Hebrew characters
+    return all(hebrew_range[0] <= ord(char) <= hebrew_range[1] for char in text)
+
+# Load hashmap from file using pickle
+
+
+def load_hashmap_from_file(filename):
+    if os.path.exists(filename) and os.path.getsize(filename) > 0:
+        try:
+            with open(filename, 'rb') as file:
+                return pickle.load(file)
+        except (pickle.UnpicklingError, EOFError, AttributeError, ImportError) as e:
+            print(f"Error loading file: {e}")
+            return {}
+    else:
+        return {}
+
+def read_pickle_file(filename):
+    try:
+        with open(filename, 'rb') as file:
+            data = pickle.load(file)
+            return data
+    except FileNotFoundError:
+        print(f"File '{filename}' not found.")
+        return None
+    except pickle.UnpicklingError as e:
+        print(f"Error loading pickle file: {e}")
+        return None
+
+
+# Save hashmap to file using pickle
+def save_hashmap_to_file(filename, hashmap_data):
+    with open(filename, 'wb') as file:
+        pickle.dump(hashmap_data, file)
+
+
+# Check number and string with hashmap
+def check_number_and_string(string, number):
+    hashmap = load_hashmap_from_file('hashmap_data.pkl')
+
+    key = (string, number)
+
+    if key in hashmap:
+        return hashmap[key],hashmap[key][-1]
+    else:
+        if is_hebrew(string):
+            hashmap[key],best_match = search_in_bibleH(string,count_words(string),number,booksH)
+        else:
+            hashmap[key],best_match = search_in_bible(string, count_words(string), number, books)
+
+    save_hashmap_to_file('hashmap_data.pkl', hashmap)  # Save the updated hashmap to the file
+    return hashmap[key],best_match
+
 
 books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
     '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs',
@@ -33,7 +90,12 @@ def create_word_groups(num_of_words_in_each_group, text):
         word_groups.append(words[i:i + num_of_words_in_each_group])
 
     return combine_lists_as_strings(word_groups)
-
+def filter_results_by_books(results, chosen_books):
+    filtered_results = []
+    for result in results:
+        if result[0] in chosen_books:  # Check if the book is in the chosen books list
+            filtered_results.append(result)
+    return filtered_results
 def extract_sublist(start_string, end_string,books):
     start_index = books.index(start_string) if start_string in books else -1
     end_index = books.index(end_string) if end_string in books else -1
@@ -53,24 +115,6 @@ def bestMatch(string, list_of_str, current_book,current_verse):
                 maxMatchWord = word
                 spm = sp
     return maxMatchWord, spm,current_book,current_verse
-
-
-def highlight_substring(main_string, substring):
-    start_index = main_string.find(substring)
-
-    if start_index != -1:
-        end_index = start_index + len(substring.strip(",.:;"))
-        highlighted_string = (
-                main_string[:start_index]
-                + "\033[93m" + main_string[start_index:end_index]
-                + "\033[0m"
-                + main_string[end_index:]
-        )
-        print("Full Verse: " + highlighted_string)
-    else:
-        print("Full Verse: " + main_string)
-
-
 def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
     results = []
     max_percent = 0
@@ -111,50 +155,6 @@ def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
     except FileNotFoundError:
         print("File 'bible.txt' not found.")
         return results
-
-def search_in_English():
-    search_input = input("Enter the word, part of a verse, or a full verse to search for: ")
-    percent = input("Enter the percentage of accuracy to search for (90% is recommended): ")
-    print("\033[93mHere is the list of the books in the bible: \033[0m")
-    part_length = len(books) // 3
-    split_parts = [books[i:i + part_length] for i in range(0, len(books), part_length)]
-    for part in split_parts:
-        print(', '.join(part))
-    start_book = input("Enter the book that you want to start to search from. If you want the whole bible enter all. "
-                       "If you want the old testament enter ot and if you want the new testament enter nt: ")
-    end_book = ''
-    flag = False
-    if start_book == 'all':
-        start_book = 'Genesis'
-        end_book = 'Revelation'
-        flag = True
-    if start_book == 'ot':
-        start_book = 'Genesis'
-        end_book = 'Malachi'
-        flag = True
-    if start_book == 'nt':
-        start_book = 'Matthew'
-        end_book = 'Revelation'
-        flag = True
-    if not flag:
-        while start_book not in books:
-            start_book = input("This book is not in the books list, try again: ")
-        end_book = input("Enter the book that you want to end your search: ")
-        while end_book not in books:
-            end_book = input("This book is not in the books list, try again: ")
-    start_time = time.time()
-    search_results,count = search_in_bible(search_input, count_words(search_input), percent, extract_sublist(start_book, end_book,books))
-    end_time = time.time()
-    print("Time took to search is: " + str(end_time - start_time) + " seconds")
-    if search_results:
-        print(str(count) + " results came back")
-        print(f"Results for '{search_input}':")
-        for result in search_results:
-            print(f"Book: {result[0]}, Chapter: {result[1]}, Verse: {result[2]}")
-            highlight_substring(result[3], result[4])
-
-    else:
-        print(f"No results found for '{search_input}' in the part of the bible that you chosen.")
 
 booksH = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 'יהושוע', 'שופטים', 'שמואל א', 'שמואל ב', 'מלכים א', 'מלכים ב', 'ישעיה',
          'ירמיה', 'יחזקאל', 'הושע', 'יואל', 'עמוס', 'עובדיה', 'יונה', 'מיכה', 'נחום', 'חבקוק', 'צפניה', 'חגי', 'זכריה',
@@ -199,82 +199,13 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
                     current_verse = verse_text.split()[0].split(':')[1]
                     current_chapter = verse_text.split()[0].split(':')[0]
                     words = verse_text.split()
-                    results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart))
-        # highlight_substringH('זהו הפסוק עם ההתאמה הטובה ביותר: '+max_book+' '+max_verse + ' עם האחוזים: '+ str(int(max_percent)),max_book+' '+max_verse)
+                    results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart,int(percent)))
         best_match = [max_book,max_verse,str(int(max_percent))]
         return results,best_match
 
     except FileNotFoundError:
         print("File 'bibleH.txt' not found.")
         return results
-
-def highlight_substringH(main_string, substring):
-    start_index = main_string.find(substring)
-
-    if start_index != -1:
-        end_index = start_index + len(substring.strip(",.:;-"))
-        highlighted_string = (
-                main_string[:start_index]
-                + "\033[93m" + main_string[start_index:end_index]
-                + "\033[0m"
-                + main_string[end_index:]
-        )
-        print("פסוק: " + highlighted_string)
-    else:
-        print("פסוק: " + main_string)
-
-def search_in_Hebrew():
-    flag = False
-    search_input = input("הכנס פסוק, חלק מפסוק או מילה: ")
-    percent = input("הכנס אחוזי דיוק (90% הכי מומלץ): ")
-    print("\033[93mהנה רשימה של ספרי התנך:\033[0m")
-    part_length = len(booksH) // 4
-    split_parts = [booksH[i:i + part_length] for i in range(0, len(booksH), part_length)]
-    for part in split_parts:
-        print(', '.join(part))
-    start_book = input("הכנס ספר שאתה רוצה להתחיל לחפש ממנו. אם אתה רוצה את כל הכתובים הכנס הכל."
-                       " אם אתה רוצה את כל התנך הכנס תנך. אם אתה רוצה את כל הברית החדשה הכנס בח: ")
-    end_book = ''
-    if start_book =='הכל':
-        start_book = 'בראשית'
-        end_book = 'התגלות'
-        flag = True
-    if start_book =='תנך':
-        start_book = 'בראשית'
-        end_book = 'דברי הימים ב'
-        flag = True
-    if start_book =='בח':
-        start_book = 'מתי'
-        end_book = 'התגלות'
-        flag = True
-    if not flag:
-        while start_book not in booksH:
-            start_book = input("הספר לא קיים, נסה שוב: ")
-        end_book = input("הכנס ספר שאתה רוצה לסיים לחפש אחריו: ")
-        while end_book not in booksH:
-            end_book = input("הספר לא קיים, נסה שוב: ")
-    start_time = time.time()
-    search_results,count = search_in_bibleH(search_input, count_words(search_input), percent,extract_sublist(start_book, end_book,booksH))
-    end_time = time.time()
-    print("הזמן שלקח לחפש הוא: " + str(end_time - start_time) + " שניות")
-    if search_results:
-        print(str(count) + " תוצאות חזרו")
-        print(f'תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת')
-        for result in search_results:
-            print(f"ספר: {result[0]}, פרק: {result[1]}, פסוק: {result[2]}")
-            highlight_substringH(result[3], result[4])
-    else:
-        print(f'אין תוצאות בשביל "{search_input}" בחלק של הכתובים שבחרת. מומלץ להוריד את אחוזי הדיוק ולנסות שוב.')
-# while 1:
-#     flag = False
-#     lang = input("האם אתה רוצה לחפש בעברית או אנגלית? בשביל עברית הכנס ע ובשביל אנגלית הכנס e. אם ברצונך לסיים הכנס ס: ")
-#     if lang =='ע':
-#         search_in_Hebrew()
-#         flag = True
-#     if lang == 'e':
-#         search_in_English()
-#         flag = True
-#     if lang == 'ס':
-#         break
-#     if not flag:
-#         input("לא בחרת שפה נכונה, לחץ אנטר ונסה שוב")
+listt,best_match = check_number_and_string("אהבה",87)
+print(best_match)
+print(read_pickle_file('hashmap_data.pkl'))

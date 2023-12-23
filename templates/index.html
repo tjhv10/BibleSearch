@@ -8,7 +8,7 @@
         <h1 class="title-heading">Bible Search</h1>
         <form action="/search" method="post" class="search-form">
             <div class="long-bar">
-                <input type="text" id="search_term"  name="search_term" class="long-bar" placeholder="Search term...">
+                <input type="text" id="search_term"  name="search_term" class="long-bar-input" placeholder="Search term...">
             </div>
             <div class="form-row">
             <div>
@@ -38,13 +38,21 @@
                 <input type="text" id="accuracy" name="accuracy" class="form-input" value="85">
             </div>
                 <div class="button-container">
-            <input type="submit" value="Search" class="btn">
+            <input onclick="sendText()" type="submit" value="Search" class="btn">
             <input type="button" value="Reset" onclick="resetForm()" class="btn">
                 </div>
         </div>
         </form>
     </div>
     <script>
+        function sendText() {
+            // Get the input value
+                const textInput = document.getElementById("search_term").value;
+
+            // Encode the input value and navigate to the result page with query parameter
+            const encodedText = encodeURIComponent(textInput);
+            window.location.href = "resultsHebrew.html?text=" + encodedText;
+        }
         function resetForm() {
         // Reset the language selection to the default value
         languageSelect.value = 'Hebrew';

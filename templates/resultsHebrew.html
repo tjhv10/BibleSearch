@@ -15,7 +15,7 @@
     </div>
 <div>
     <button onclick="goBack()" class="btn">חזור לחיפוש</button>
-    <h1 class="title-headingW">תוצאות החיפוש</h1>
+    <h1 class="title-headingW" id="sr"></h1>
     {% if results %}
         <h1 class="title-headingW">{{ results|length }} תוצאות נמצאו:</h1>
         <ul>
@@ -37,6 +37,9 @@
             function goBack() {
                     window.history.back();
                 }
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchTerm = urlParams.get('text');
+                document.getElementById("sr").innerHTML = "תוצאות למילה "+searchTerm+':';
         </script>
 </body>
 </html>
