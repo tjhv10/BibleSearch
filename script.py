@@ -1,14 +1,21 @@
-import time
 from difflib import SequenceMatcher
 import pickle
 import os
+f="hashmap_data.pkl"
+def delete_file_content(file_name):
+    try:
+        with open(file_name, 'w') as file:
+            file.truncate(0)  # Truncate the file to remove all content
+        print(f"Content of '{file_name}' has been deleted.")
+    except FileNotFoundError:
+        print(f"File '{file_name}' not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 def is_hebrew(text):
     hebrew_range = (0x0590, 0x05FF)  # Unicode range for Hebrew characters
-    return all(hebrew_range[0] <= ord(char) <= hebrew_range[1] for char in text)
-
-# Load hashmap from file using pickle
-
+    hebrew_chars = [char for char in text if hebrew_range[0] <= ord(char) <= hebrew_range[1]]
+    return len(hebrew_chars) > 0
 
 def load_hashmap_from_file(filename):
     if os.path.exists(filename) and os.path.getsize(filename) > 0:
@@ -42,20 +49,20 @@ def save_hashmap_to_file(filename, hashmap_data):
 
 # Check number and string with hashmap
 def check_number_and_string(string, number):
-    hashmap = load_hashmap_from_file('hashmap_data.pkl')
+    hashmap = load_hashmap_from_file(f)
 
     key = (string, number)
 
     if key in hashmap:
-        return hashmap[key],hashmap[key][-1]
+        return hashmap[key]
     else:
         if is_hebrew(string):
-            hashmap[key],best_match = search_in_bibleH(string,count_words(string),number,booksH)
+            hashmap[key] = search_in_bibleH(string,count_words(string),number,booksH)
         else:
-            hashmap[key],best_match = search_in_bible(string, count_words(string), number, books)
+            hashmap[key] = search_in_bible(string, count_words(string), number, books)
 
-    save_hashmap_to_file('hashmap_data.pkl', hashmap)  # Save the updated hashmap to the file
-    return hashmap[key],best_match
+    save_hashmap_to_file(f, hashmap)  # Save the updated hashmap to the file
+    return hashmap[key]
 
 
 books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
@@ -92,6 +99,7 @@ def create_word_groups(num_of_words_in_each_group, text):
     return combine_lists_as_strings(word_groups)
 def filter_results_by_books(results, chosen_books):
     filtered_results = []
+    # print(results)
     for result in results:
         if result[0] in chosen_books:  # Check if the book is in the chosen books list
             filtered_results.append(result)
@@ -147,10 +155,10 @@ def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
                     current_verse = verse_text.split()[0].split(':')[1]
                     current_chapter = verse_text.split()[0].split(':')[0]
                     words = verse_text.split()
-                    results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart))
+                    results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart, int(percent)))
         best_match = [max_book, max_verse, str(int(max_percent))]
         # highlight_substring('This is the verse with the highest percent of match ' + max_book + ' ' + max_verse + ' with the percent: ' + str(int(max_percent)), max_book + ' ' + max_verse)
-        return results,best_match
+        return results
 
     except FileNotFoundError:
         print("File 'bible.txt' not found.")
@@ -201,11 +209,9 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
                     words = verse_text.split()
                     results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart,int(percent)))
         best_match = [max_book,max_verse,str(int(max_percent))]
-        return results,best_match
+
+        return results
 
     except FileNotFoundError:
         print("File 'bibleH.txt' not found.")
         return results
-listt,best_match = check_number_and_string("אהבה",87)
-print(best_match)
-print(read_pickle_file('hashmap_data.pkl'))

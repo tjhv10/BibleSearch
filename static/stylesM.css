@@ -15,17 +15,6 @@
     padding: 20px;
     text-align: center;
     }
-.top-bar .form-row > div,.top-bar .long-bar input[type="text"] {
-    margin-bottom: 5%;
-}
-/* Increasing the height of select and input elements */
-.top-bar .form-input,
-.top-bar input[type="text"],
-.top-bar select {
-    height: 150px; /* Adjust this value as needed */
-    font-size:70px;
-}
-
     .title-heading {
         margin-top: 10px;
     margin-bottom: 20px;
@@ -37,49 +26,19 @@
     font-weight: bold;
     font-size: 70px;
 }
-    .search-form {
-    padding: 20px;
-    }
 
     .form-row {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    }
-
-    .form-input
-    ,input[type="text"]
-    /*,input[type="button"],*/
-    /*input[type="submit"]*/
-    {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
     }
 
     .long-bar {
-
-    }
-
-    body {
-    font-size: 18px;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f3f3f3;
-    overflow-x: hidden; /* Hide horizontal scrollbar */
-    overflow-y: auto; /* Enable vertical scrollbar if needed */
-}
-
-    .top-bar {
-    background-color: #007bff;
-    color: white;
-    padding: 20px;
-    text-align: center;
+        padding-left: 0px;
+        padding-right: 18px;
     }
 .top-bar .form-row > div,.top-bar .long-bar input[type="text"] {
-    margin-bottom: 5%;
+    margin-bottom: 1.2%;
 }
 /* Increasing the height of select and input elements */
 .top-bar .form-input,
@@ -101,7 +60,7 @@
     font-size: 70px;
 }
     .search-form {
-    padding: 20px;
+
     }
 
     .form-row {
@@ -112,8 +71,6 @@
 
     .form-input
     ,input[type="text"]
-    /*,input[type="button"],*/
-    /*input[type="submit"]*/
     {
     width: 100%;
     padding: 8px;
@@ -147,4 +104,32 @@
 
 .btn:hover {
     background-color: #0056b3;
+}
+.image-container {
+    position: absolute;
+    top: 0; /* Adjust this value to place the image below the top bar */
+    left: 0;
+    width: 0;
+    text-align: center;
+    z-index: 0; /* Set a lower stacking order */
+}
+.bible-search-bar {
+    background-color: #0e13a4;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative; /* Ensure the top bar stays in its place */
+    z-index: 1; /* Set a higher stacking order */
+}
+.bottom-bar {
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            /*margin-left: 0;*/
+            margin: 0;
+            z-index: 2;
 }

@@ -4,11 +4,13 @@
     <title>Bible Search</title>
 </head>
 <body>
-    <div class="top-bar">
+        <div class="bible-search-bar">
         <h1 class="title-heading">Bible Search</h1>
-        <form action="/search" method="post" class="search-form">
+        </div><form action="/search" method="post" class="search-form" onsubmit="onSubmit();return allowSubmit()">
+        <div class="top-bar">
+
             <div class="long-bar">
-                <input type="text" id="search_term"  name="search_term" class="long-bar-input" placeholder="Search term...">
+                <input type="text" id="search_term"  name="search_t" class="long-bar-input" placeholder="Search term...">
             </div>
             <div class="form-row">
             <div>
@@ -34,24 +36,74 @@
             </div>
 
             <div>
-                <label for="accuracy" class="form-label">Enter Accuracy (%):</label>
-                <input type="text" id="accuracy" name="accuracy" class="form-input" value="85">
+                <label for="accuracy" class="form-label">Pick Accuracy (%):</label>
+        <select id="accuracy" name="accuracy" class="form-input">
+            <option value="100">Very High (100%)</option>
+            <option value="85" selected>High (85%)</option>
+            <option value="75">Medium (75%)</option>
+            <option value="60">Low (60%)</option>
+        </select>
             </div>
                 <div class="button-container">
-            <input onclick="sendText()" type="submit" value="Search" class="btn">
+            <input  type="submit" value="Search" class="btn" id="submit" name="submit">
             <input type="button" value="Reset" onclick="resetForm()" class="btn">
                 </div>
         </div>
-        </form>
-    </div>
-    <script>
-        function sendText() {
-            // Get the input value
-                const textInput = document.getElementById("search_term").value;
 
-            // Encode the input value and navigate to the result page with query parameter
-            const encodedText = encodeURIComponent(textInput);
-            window.location.href = "resultsHebrew.html?text=" + encodedText;
+            <div class="image-container" id="img">
+            <img src="https://st.depositphotos.com/1341440/2335/v/450/depositphotos_23353394-stock-illustration-black-silhouette-of-open-book.jpg" id="imgr">
+    </div>
+
+
+    </div></form>
+        <div class="bottom-bar">
+        <p style="font-size: 20px">לזכר אוריה באייר ז"ל</p>
+    </div>
+
+    <script>
+                function checkLanguage() {
+                const selectedLanguage = document.getElementById('language').value;
+                const text = document.getElementById('search_term').value;
+
+                // Use a language detection library to identify the language of the text
+                // Replace the logic here with the chosen library or API
+                // For example, using a simple check for illustration purposes:
+                const detectedLanguage = detectLanguage(text);
+
+                // Compare the detected language with the selected language in the tab
+                return detectedLanguage === selectedLanguage;
+            }
+
+            // Function to simulate language detection (replace this with actual detection logic)
+            function detectLanguage(text) {
+                // For demonstration, return 'English' if text starts with an English letter
+                return /^[A-Za-z]/.test(text) ? 'English' : 'Hebrew';
+            }
+
+            function allowSubmit() {
+                const inputValue = document.getElementById('search_term').value;
+                if (inputValue.length > 1 && checkLanguage()) {
+                    return true; // Allow form submission if input is valid
+                }
+                else if(inputValue.length < 2 && checkLanguage())
+                {
+                    alert('Please enter at least 2 characters.'); // Show alert
+                    return false;
+                }
+                    else{
+                        alert('Please enter the search term in the right language.')
+                        return false; // Prevent form submission if input is invalid
+                }
+            }
+if (isMobileDevice()) {
+    document.getElementById('imgr').src = ''
+} else {
+
+}
+
+        function onSubmit() {
+            let search = document.getElementById("search_term").value;
+            localStorage.setItem('search', search);
         }
         function resetForm() {
         // Reset the language selection to the default value
@@ -64,10 +116,6 @@
         document.getElementById('search_term').value = ''; // Reset search term field
         document.getElementById('accuracy').value = '85'; // Reset accuracy field
     }
-
-        function goBack() {
-            window.history.back();
-        }
         // JavaScript to dynamically change the options for start and end books
         const languageSelect = document.getElementById('language');
         const startBookSelect = document.getElementById('start_book');

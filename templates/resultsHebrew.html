@@ -5,14 +5,14 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="best-match">
-        <h2>ההתאמה הטובה ביותר</h2>
-        {% if best_match %}
-            <p><strong>ספר:</strong> {{ best_match[0] }}</p>
-            <p><strong>פסוק:</strong> {{ best_match[1] }}</p>
-            <p><strong>דיוק:</strong> {{ best_match[2] }}%</p>
-        {% endif %}
-    </div>
+<!--    <div class="best-match">-->
+<!--        <h2>ההתאמה הטובה ביותר</h2>-->
+<!--        {% if best_match %}-->
+<!--            <p><strong>ספר:</strong> {{ best_match[0] }}</p>-->
+<!--            <p><strong>פסוק:</strong> {{ best_match[1] }}</p>-->
+<!--            <p><strong>דיוק:</strong> {{ best_match[2] }}%</p>-->
+<!--        {% endif %}-->
+<!--    </div>-->
 <div>
     <button onclick="goBack()" class="btn">חזור לחיפוש</button>
     <h1 class="title-headingW" id="sr"></h1>
@@ -25,21 +25,23 @@
                     <strong>פרק:</strong> {{ result[1] }}<br>
                     <strong>פסוק:</strong> {{ result[2] }}<br>
                     <strong>טקסט:</strong> {{ result[3] }}<br>
-                    <strong>החלק המתאים:</strong> <span class="matched-part">{{ result[4].strip(",:.") }}</span><br><br>
+                    <strong>החלק המתאים:</strong> <span class="matched-part">{{ result[4].strip(",:.") }}</span><br>
+                    <strong>אחוזי התאמה: </strong> {{ result[5] }}<br>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>לא נמצאו תוצאות.</p>
+        <p class="title-headingW">לא נמצאו תוצאות.</p>
     {% endif %}
         </div>
         <script>
             function goBack() {
                     window.history.back();
                 }
-                const urlParams = new URLSearchParams(window.location.search);
-                const searchTerm = urlParams.get('text');
-                document.getElementById("sr").innerHTML = "תוצאות למילה "+searchTerm+':';
+            let searchTerm = localStorage.getItem('search');
+            document.getElementById("sr").innerHTML = "תוצאות לחיפוש של " + searchTerm + ':';
+
+
         </script>
 </body>
 </html>

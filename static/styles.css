@@ -6,8 +6,8 @@
     font-size: 20px;
     text-align: center;
     text-decoration: none;
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #000000;
+    color: #ffffff;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -18,29 +18,16 @@
 .btn:hover {
     background-color: #0056b3;
 }
-body {
-    background-color: #000000;
-    width: 80%; /* Set your desired width */
-    margin: 0 auto; /* This centers the body horizontally */
+body,html {
+    background-color: #ffffff;
+    width: 100%; /* Set your desired width */
+    margin: 0; /* This centers the body horizontally */
     font-family: Arial, sans-serif;
+    padding: 0;
     line-height: 1.6;
-    padding: 20px;
+    position: relative;
 }
 
-/* Style for the best match section */
-.best-match {
-    font-size: 40px;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-/* Styles for best match elements */
-.best-match p {
-    margin: 5px 0;
-}
 
 /* Style for the list */
 ul {
@@ -92,23 +79,26 @@ select,
 }
 
 .top-bar {
-    position: fixed;
-    top: 0;
+    margin-top: 0;
     left: 0;
     right: 0;
+    width: 100%;
     background-color: #007bff;
     color: white;
     padding: 20px;
     text-align: center;
+    position: relative; /* Ensure it's not overlapped by absolute positioned elements */
+    z-index: 2; /* Set a higher stacking order */
 }
 .title-heading {
     margin-bottom: 20px;
     font-size: 50px;
+    color: white;
 }
 .title-headingW {
     margin-bottom: 20px;
     font-size: 50px;
-    color: white;
+    color: #060000;
 }
 
 .search-form {
@@ -132,8 +122,9 @@ select,
 /* CSS for the search bar */
 .long-bar {
   position: relative;
-  width: 70%; /* Adjust width as needed */
-  margin: 20px; /* Add margin for spacing */
+  width: 55%; /* Adjust width as needed */
+  margin-left: 22%; /* Add margin for spacing */
+    margin-bottom: 1%;
 }
 
 .long-bar-input {
@@ -143,7 +134,7 @@ select,
   border-radius: 20px; /* Rounded corners */
   outline: none;
   font-size: 16px;
-  background-image: url('img.png'); /* Replace 'path/to/magnifying-glass-icon.png' with your icon path */
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/1200px-Magnifying_glass_icon.svg.png'); /* Replace 'path/to/magnifying-glass-icon.png' with your icon path */
   background-size: 20px 20px; /* Adjust icon size */
   background-position: 10px center; /* Position the icon */
   background-repeat: no-repeat;
@@ -169,4 +160,35 @@ select,
     align-items: center;
     flex-wrap: wrap; /* Allows items to wrap if they exceed the width */
     gap: 10px; /* Adjust the gap between form elements */
+}
+.bible-search-bar {
+    background-color: #0e13a4;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative; /* Ensure the top bar stays in its place */
+    z-index: 2; /* Set a higher stacking order */
+}
+.image-container {
+    position: absolute;
+    top: 210px; /* Adjust this value to place the image below the top bar */
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 1; /* Set a lower stacking order */
+}
+
+.image-container img {
+    width: 600px;
+    z-index: 1;
+}
+.bottom-bar {
+            background-color: black;
+            color: white;
+            text-align: center;
+            padding: 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+    z-index: 2;
 }
