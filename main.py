@@ -31,5 +31,5 @@ def search():
 
 if __name__ == '__main__':
     # script.delete_file_content(script.f)
-    print(script.read_pickle_file("hashmap_data.pkl"))
-    # app.run(debug=True)
+    # print(script.read_pickle_file("hashmap_data.pkl"))
+    app.run(debug=True)

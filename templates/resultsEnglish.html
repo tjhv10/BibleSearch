@@ -2,12 +2,13 @@
 <html>
 <head>
     <title>Search Results</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn4.iconfinder.com/data/icons/school-and-education-5-1/128/225-1024.png">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 <div>
     <button onclick="goBack()" class="btn">Back to search</button>
-    <h1 class="title-headingW">Search Results</h1>
+    <h1 class="title-headingW" id="sr"></h1>
     {% if results %}
         <h1 class="title-headingW">{{ results|length }} results found:</h1>
         <ul>
@@ -30,6 +31,8 @@
             function goBack() {
                     window.history.back();
                 }
+            let searchTerm = localStorage.getItem('search');
+            document.getElementById("sr").innerHTML = "results for " + searchTerm + ':';
         </script>
 </body>
 </html>
