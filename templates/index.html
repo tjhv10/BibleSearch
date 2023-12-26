@@ -62,18 +62,22 @@
     </div>
 
     <script>
-                function checkLanguage() {
-                const selectedLanguage = document.getElementById('language').value;
-                const text = document.getElementById('search_term').value;
+        if (isMobileDevice())
+        {
+            document.getElementById('imgr').style.display = 'none';
+        }
+        function checkLanguage() {
+            const selectedLanguage = document.getElementById('language').value;
+            const text = document.getElementById('search_term').value;
 
-                // Use a language detection library to identify the language of the text
-                // Replace the logic here with the chosen library or API
-                // For example, using a simple check for illustration purposes:
-                const detectedLanguage = detectLanguage(text);
+            // Use a language detection library to identify the language of the text
+            // Replace the logic here with the chosen library or API
+            // For example, using a simple check for illustration purposes:
+            const detectedLanguage = detectLanguage(text);
 
-                // Compare the detected language with the selected language in the tab
-                return detectedLanguage === selectedLanguage;
-            }
+            // Compare the detected language with the selected language in the tab
+            return detectedLanguage === selectedLanguage;
+        }
 
             // Function to simulate language detection (replace this with actual detection logic)
             function detectLanguage(text) {
@@ -96,11 +100,6 @@
                         return false; // Prevent form submission if input is invalid
                 }
             }
-if (isMobileDevice()) {
-    document.getElementById('imgr').src = ''
-} else {
-
-}
 
         function onSubmit() {
             let search = document.getElementById("search_term").value;
