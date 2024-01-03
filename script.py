@@ -2,6 +2,9 @@ from difflib import SequenceMatcher
 import pickle
 import os
 f="hashmap_data.pkl"
+
+
+
 def delete_file_content(file_name):
     try:
         with open(file_name, 'w') as file:
@@ -28,17 +31,20 @@ def load_hashmap_from_file(filename):
     else:
         return {}
 
+# def read_pickle_file(filename):
+#     with open(filename, 'rb') as file:
+#         data = pickle.load(file)
+#     return data
+
 def read_pickle_file(filename):
-    try:
-        with open(filename, 'rb') as file:
-            data = pickle.load(file)
-            return data
-    except FileNotFoundError:
-        print(f"File '{filename}' not found.")
-        return None
-    except pickle.UnpicklingError as e:
-        print(f"Error loading pickle file: {e}")
-        return None
+    with open(filename, 'rb') as file:
+        data = pickle.load(file)
+        for item in data:
+                print(item)
+
+def append_to_file(string, number):
+    with open('searches.txt', 'a') as file:
+        file.write(f"{string} {number}\n")
 
 
 # Save hashmap to file using pickle
@@ -50,7 +56,6 @@ def save_hashmap_to_file(filename, hashmap_data):
 # Check number and string with hashmap
 def check_number_and_string(string, number):
     hashmap = load_hashmap_from_file(f)
-
     key = (string, number)
 
     if key in hashmap:
@@ -215,3 +220,9 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
     except FileNotFoundError:
         print("File 'bibleH.txt' not found.")
         return results
+def filter_tuples_by_number(lst, num):
+        filtered_list = []
+        for item in lst:
+            if int(item[-1]) >= int(num):
+                filtered_list.append(item)
+        return filtered_list

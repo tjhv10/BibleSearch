@@ -83,6 +83,7 @@ select,
     left: 0;
     right: 0;
     width: 100%;
+    height: 10%;
     background-color: #007bff;
     color: white;
     padding: 20px;
@@ -164,16 +165,17 @@ select,
 }
 .image-container {
     position: absolute;
-    top: 100%; /* Adjust this value to place the image below the top bar */
+    top: 82%; /* Adjust this value to place the image below the top bar */
     left: 0;
     width: 100%;
     text-align: center;
-    z-index: 1; /* Set a lower stacking order */
+    z-index: 0; /* Set a lower stacking order */
 }
 
 .image-container img {
     width: 600px;
-    z-index: 1;
+    height: 400px;
+    z-index: 0;
 }
 .bottom-bar {
             background-color: black;
