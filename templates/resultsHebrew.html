@@ -30,6 +30,7 @@
         <script>
             function goBack() {
                     window.history.back();
+                    document.getElementById('submit').disabled = false;
                 }
             let searchTerm = localStorage.getItem('search');
             document.getElementById("sr").innerHTML = "תוצאות לחיפוש של " + searchTerm + ':';

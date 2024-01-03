@@ -1,5 +1,8 @@
 import re
 
+import script
+
+
 def find_chapter(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         text = file.read()
@@ -281,15 +284,22 @@ def split_rows_with_numbers(file_path):
     previous_parts = []
     for line in lines:
         if '$' not in line:
-            parts = re.split(r'(\d+)', line)  # Split on numbers
+            parts = re.split(r'(\d+)', line.strip())
+            parts = [x for x in parts if x != ""]# Split on numbers
+            print(parts)
             new_parts = []
+            flag = False
             for part in parts:
                 if part.strip():
                     if is_number(part):
                         if previous_parts:
-                            updated_lines.append(''.join(previous_parts).strip())
+                            flag = True
+
                         updated_lines.append(part.strip())
+                        if flag:
+                            updated_lines.append(''.join(previous_parts).strip())
                         previous_parts = new_parts = []
+                        flag = False
                     else:
                         new_parts.append(part.strip())
             previous_parts += new_parts
@@ -418,6 +428,151 @@ def convert_hebrew_to_gematria_in_file(file_name):
                 file.write(str(modified_line) + '\n')
             else:
                 file.write(line)
-    # Print modified content
-f = 'bibleHNT.txt'
-# convert_hebrew_to_gematria_in_file(f)
+
+def add_episodes_to_versus(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    output_lines = []
+    current_number = None
+
+    for line in lines:
+        words = line.strip().split()
+        if len(words) == 1 and words[0].isdigit():
+            current_number = words[0]
+            output_lines.append(line.strip())
+        elif current_number is not None and len(words) > 0:
+            updated_line = ' '.join(str(current_number +':'+ word) if word.isdigit() else word for word in words)
+            output_lines.append(updated_line)
+        else:
+            output_lines.append(line.strip())
+
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write('\n'.join(output_lines))
+
+
+def extract_text_with_pattern(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    for line in lines:
+        words = line.strip().split()
+        previous_end = 0
+
+        for word in words:
+            if '$' not in word:
+                match = re.search(r'(.+?)\s*:\s*\d+', word)
+                if match:
+                    extracted_text = match.string
+                    print(match.span())
+                    match_start, match_end = match.span()
+                    if match_start > 0:
+                        print(f"previus end:{previous_end}")
+                        print(f"match start:{match_start}")
+                        between_text = word[previous_end:match_start]
+                    else:
+                        between_text = ""
+
+                    print(f"Matched Text: {extracted_text}")
+                    print(f"Text Between: {between_text}")
+
+                    previous_end = match_end + 1 if match_end < len(word) else 0
+
+def separate_lines_with_pattern(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        text = file.read()
+
+    separated_text = re.sub(r'(\d+:\d+)\s+', r'\n\1 ', text)
+
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write(separated_text)
+
+# Example usage:
+f = 'bibleHN.txt'
+def copy_rows_to_another_file(source_file, destination_file):
+    with open(source_file, 'r', encoding='utf-8') as source:
+        content = source.readlines()
+
+    rows_to_write = content[:23252]
+
+    with open(destination_file, 'r+', encoding='utf-8') as dest:
+        original_content = dest.readlines()
+        dest.seek(0)
+        for row in rows_to_write + original_content:
+            dest.write(row)
+def find_identical_lines(file_path):
+    lines_seen = set()
+    duplicate_lines = []
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    for line in lines:
+        if line in lines_seen:
+            duplicate_lines.append(line.strip())
+        else:
+            lines_seen.add(line)
+
+    if duplicate_lines:
+        print("Identical lines found:")
+        for duplicate in set(duplicate_lines):
+            print(duplicate)
+    else:
+        print("No identical lines found.")
+def append_lines_without_numbers(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    updated_lines = []
+    previous_line = ''
+
+    for line in lines:
+        if not any(char.isdigit() or char == '$' for char in line):
+            previous_line += line.strip()
+        else:
+            if previous_line:
+                updated_lines.append(previous_line)
+            previous_line = line.strip()
+
+    # Append the last line
+    if previous_line:
+        updated_lines.append(previous_line)
+
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write('\n'.join(updated_lines))
+def check_multiple_digit_words(file_path):
+    count = 0
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    for line_number, line in enumerate(lines, start=1):
+        words_with_digits = re.findall(r'\b\w*\d\w*\b', line)
+        if len(words_with_digits) > 1:
+            count +=1
+    print(count)
+def compare_numbers_in_patterns(file_path1, file_path2):
+    with open(file_path1, 'r', encoding='utf-8') as file1:
+        lines1 = file1.readlines()
+
+    with open(file_path2, 'r', encoding='utf-8') as file2:
+        lines2 = file2.readlines()
+
+    pattern = r'(\d+:\d+)'
+
+    numbers_lines1 = [re.findall(pattern, line) for line in lines1]
+    numbers_lines2 = [re.findall(pattern, line) for line in lines2]
+
+    min_len = min(len(numbers_lines1), len(numbers_lines2))
+
+    diff_line = min_len
+    for i in range(min_len):
+        if numbers_lines1[i] != numbers_lines2[i]:
+            diff_line = i
+            break
+
+    if diff_line == min_len:
+        print("The numbers in the patterns are the same in both files.")
+    else:
+        print(f"The patterns start differing at line number: {diff_line + 1}")
+        print(f"File 1: {numbers_lines1[diff_line]}")
+        print(f"File 2: {numbers_lines2[diff_line]}")

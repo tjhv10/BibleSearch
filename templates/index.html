@@ -15,12 +15,16 @@
             <div class="form-row">
             <div>
                 <label for="language" class="form-label">Select Language:</label>
-                <select name="language" id="language" class="form-input">
+                <select name="language" id="language" class="form-input" onchange="generateSelect(this)">
                     <option value="Hebrew">Hebrew</option>
                     <option value="English">English</option>
                 </select>
             </div>
-
+                <div>
+                    <label for="version" class="form-label" id="ver_label">Select Version:</label>
+                <div id="version">
+                </div>
+                    </div>
             <div>
                 <label for="start_book" class="form-label">Select Start Book:</label>
                 <select name="start_book" id="start_book" class="form-input">
@@ -61,6 +65,63 @@
     </div>
 
     <script>
+        window.onload = function() {
+    const defaultLanguageSelect = document.getElementById("language");
+    generateSelect(defaultLanguageSelect);
+    toggleLabel();
+}
+
+function generateSelect(selectElement) {
+    const selectedLanguage = selectElement.value;
+    if (selectedLanguage === "Hebrew") {
+        const version = document.createElement("select");
+        version.name = "version";
+        version.id = "version";
+        version.className = "form-input";
+
+        // const option2 = document.createElement("option");
+        // option2.value = "new";
+        // option2.textContent = "תרגום מודרני";
+        // version.appendChild(option2);
+
+        const option1 = document.createElement("option");
+        option1.value = "old";
+        option1.textContent = "דליטש";
+        version.appendChild(option1);
+
+
+        const versionDiv = document.getElementById("version");
+        versionDiv.innerHTML = ""; // Clear previous content
+        versionDiv.appendChild(version);
+    } else {
+        document.getElementById("version").innerHTML = ""; // Clear if not Hebrew
+    }
+    toggleLabel();
+}
+
+function toggleLabel() {
+    const selectLabel = document.getElementById("ver_label");
+    const languageSelect = document.getElementById("language");
+    selectLabel.style.display = languageSelect.value === "Hebrew" ? "block" : "none";
+}
+        window.addEventListener('load', function() {
+  // Enable the submit button when the page loads for the first time
+  enableSubmitButton();
+
+  // Listen for the pageshow event
+  window.addEventListener('pageshow', function(event) {
+    // Check if the page is being accessed through the back/forward buttons
+    if (event.persisted) {
+      // If the page is accessed through the back button, enable the submit button
+      enableSubmitButton();
+    }
+  });
+});
+
+function enableSubmitButton() {
+  // Enable the submit button by removing the 'disabled' attribute
+  document.getElementById('submit').removeAttribute('disabled');
+}
         if (isMobileDevice())
         {
             document.getElementById('imgr').style.display = 'none';
@@ -87,7 +148,9 @@
             function allowSubmit() {
                 const inputValue = document.getElementById('search_term').value;
                 if (inputValue.length > 1 && checkLanguage()) {
+                    document.getElementById('submit').disabled = true;
                     return true; // Allow form submission if input is valid
+
                 }
                 else if(inputValue.length < 2 && checkLanguage())
                 {

@@ -16,14 +16,18 @@ def index():
 def search():
     if request.method == 'POST':
         language = request.form['language']
+        try:
+            version = request.form['version']
+        except:
+            pass
         search_term = request.form['search_t']
         start_book = request.form['start_book']
         end_book = request.form['end_book']
         accuracy = request.form['accuracy']
         script.append_to_file(search_term, accuracy)
         if language == 'English':
-            if int(accuracy)>=75:
-                results = script.check_number_and_string(search_term,75)
+            if int(accuracy)>=85:
+                results = script.check_number_and_string(search_term,0)
             else:
                 results = script.search_in_bible(search_term,script.count_words(search_term),accuracy,script.books)
             if results:
@@ -31,20 +35,28 @@ def search():
             return render_template('resultsEnglish.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
 
         elif language == 'Hebrew':
-            if int(accuracy)>=75:
-                results = script.check_number_and_string(search_term,75)
-            else:
-                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH)
-            if results:
-                results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
-            return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
+            if version == 'old':
+                if int(accuracy)>=85:
+                    results = script.check_number_and_string(search_term,0)
+                else:
+                    results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleH.txt')
+                if results:
+                    results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
+                return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
+            elif version == 'new':
+                if int(accuracy)>=85:
+                    results = script.check_number_and_string(search_term,1)
+                else:
+                    results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleHN.txt')
+                if results:
+                    results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
+                return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
+
     return render_template('index.html')
 
 
 if __name__ == '__main__':
-    # script.delete_file_content(script.f)
-    # print(script.read_pickle_file("hashmap_data.pkl"))
-    # script.read_pickle_file("hashmap_data.pkl")
+
     # web = webdriver.Chrome()
     # url = 'http://www.kirjasilta.net/hadash/Hit.1.html'
     # web.get(url)
@@ -58,4 +70,6 @@ if __name__ == '__main__':
     #             text_to_write = web.find_element(By.XPATH, '/html/body/p[' + str(j) + ']').text
     #             file.write(text_to_write + '\n')
     #     web.find_element(By.XPATH, '/html/body/p[' + str(j + 1) + ']/a[1]').click()
+    # script.delete_file_content(script.f)
+    # print(script.read_pickle_file("hashmap_data.pkl"))
     app.run(debug=True)

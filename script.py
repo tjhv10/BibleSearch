@@ -54,17 +54,22 @@ def save_hashmap_to_file(filename, hashmap_data):
 
 
 # Check number and string with hashmap
-def check_number_and_string(string, number):
+def check_number_and_string(string,new):
     hashmap = load_hashmap_from_file(f)
-    key = (string, number)
+    key = (string, new)
 
     if key in hashmap:
         return hashmap[key]
     else:
         if is_hebrew(string):
-            hashmap[key] = search_in_bibleH(string,count_words(string),number,booksH)
+            if new == 1:
+                hashmap[key] = search_in_bibleH(string,count_words(string),85,booksH,'bibleHN.txt')
+            elif new == 0:
+                hashmap[key] = search_in_bibleH(string, count_words(string), 85, booksH, 'bibleH.txt')
+            else:
+                print("mistake")
         else:
-            hashmap[key] = search_in_bible(string, count_words(string), number, books)
+            hashmap[key] = search_in_bible(string, count_words(string), 85, books)
 
     save_hashmap_to_file(f, hashmap)  # Save the updated hashmap to the file
     return hashmap[key]
@@ -178,15 +183,11 @@ booksH = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 
          'הראשונה לכיפא', 'השניה לכיפא', 'הראשונה ליוחנן', 'השניה ליוחנן', 'השלישית ליוחנן', 'איגרת יהודה', 'התגלות']
 
 
-def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
+def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books,f):
     results = []
     max_percent = 0
-    max_match = ''
-    max_book = ''
-    max_verse = ''
-    best_match = []
     try:
-        with open('bibleH.txt', 'r', encoding='utf-8') as file:
+        with open(f, 'r', encoding='utf-8') as file:
             flag = False
             lines = file.readlines()
             for line in lines:
@@ -213,12 +214,10 @@ def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books):
                     current_chapter = verse_text.split()[0].split(':')[0]
                     words = verse_text.split()
                     results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart,int(percent)))
-        best_match = [max_book,max_verse,str(int(max_percent))]
-
         return results
 
     except FileNotFoundError:
-        print("File 'bibleH.txt' not found.")
+        print("File "+f+" not found.")
         return results
 def filter_tuples_by_number(lst, num):
         filtered_list = []
