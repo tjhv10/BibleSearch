@@ -1,6 +1,10 @@
 from difflib import SequenceMatcher
 import pickle
 import os
+import socket
+import json
+from datetime import datetime,timedelta
+
 f="hashmap_data.pkl"
 
 
@@ -31,10 +35,6 @@ def load_hashmap_from_file(filename):
     else:
         return {}
 
-# def read_pickle_file(filename):
-#     with open(filename, 'rb') as file:
-#         data = pickle.load(file)
-#     return data
 
 def read_pickle_file(filename):
     with open(filename, 'rb') as file:
@@ -44,7 +44,9 @@ def read_pickle_file(filename):
 
 def append_to_file(string, number):
     with open('searches.txt', 'a') as file:
-        file.write(f"{string} {number}\n")
+        good_time = datetime.now()+timedelta(hours=2)
+        good_time = good_time.strftime("%d.%m.%Y %H:%M")
+        file.write(f"{string} {number} {good_time}\n")
 
 
 # Save hashmap to file using pickle
@@ -136,8 +138,6 @@ def bestMatch(string, list_of_str, current_book,current_verse):
 def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
     results = []
     max_percent = 0
-    max_book = ''
-    max_verse = ''
     try:
         with open("bible.txt", 'r') as file:
             flag = False
@@ -158,16 +158,12 @@ def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
                     matchedPart,percent, book,verse = bestMatch(search_term, verse_parts_list, current_book,verse_text)
                     if max_percent < percent:
                         max_percent = percent
-                        max_verse = verse
-                        max_book = book
                     if percent<int(chosen_percent):
                         continue
                     current_verse = verse_text.split()[0].split(':')[1]
                     current_chapter = verse_text.split()[0].split(':')[0]
                     words = verse_text.split()
                     results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart, int(percent)))
-        best_match = [max_book, max_verse, str(int(max_percent))]
-        # highlight_substring('This is the verse with the highest percent of match ' + max_book + ' ' + max_verse + ' with the percent: ' + str(int(max_percent)), max_book + ' ' + max_verse)
         return results
 
     except FileNotFoundError:
@@ -183,45 +179,53 @@ booksH = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 
          'הראשונה לכיפא', 'השניה לכיפא', 'הראשונה ליוחנן', 'השניה ליוחנן', 'השלישית ליוחנן', 'איגרת יהודה', 'התגלות']
 
 
-def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books,f):
-    results = []
-    max_percent = 0
-    try:
-        with open(f, 'r', encoding='utf-8') as file:
-            flag = False
-            lines = file.readlines()
-            for line in lines:
-                if line.startswith('$:'):
-                    current_book = line.split(':')[1].strip()
-                    if current_book not in chosen_books:
-                        flag = False
-                        continue
-                    else:
-                        flag = True
-                else:
-                    if not flag:
-                        continue
-                    verse_text = line.strip()
-                    verse_parts_list = create_word_groups(num_of_words, verse_text)
-                    matchedPart, percent, book, verse = bestMatch(search_term, verse_parts_list, current_book,verse_text)
-                    if max_percent < percent:
-                        max_percent = percent
-                        max_verse = verse
-                        max_book = book
-                    if percent<int(chosen_percent):
-                        continue
-                    current_verse = verse_text.split()[0].split(':')[1]
-                    current_chapter = verse_text.split()[0].split(':')[0]
-                    words = verse_text.split()
-                    results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart,int(percent)))
-        return results
+def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books = booksH , f = "bibleH.txt"):
+    host = 'localhost'
+    port = 9998
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        
+        s.connect((host, port))
+        s.sendall(json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)).encode())
 
-    except FileNotFoundError:
-        print("File "+f+" not found.")
-        return results
+    # results = []
+    # max_percent = 0
+    # try:
+    #     with open(f, 'r', encoding='utf-8') as file:
+    #         flag = False
+    #         lines = file.readlines()
+    #         for line in lines:
+    #             if line.startswith('$:'):
+    #                 current_book = line.split(':')[1].strip()
+    #                 if current_book not in chosen_books:
+    #                     flag = False
+    #                     continue
+    #                 else:
+    #                     flag = True
+    #             else:
+    #                 if not flag:
+    #                     continue
+    #                 verse_text = line.strip()
+    #                 verse_parts_list = create_word_groups(num_of_words, verse_text)
+    #                 matchedPart, percent, book, verse = bestMatch(search_term, verse_parts_list, current_book,verse_text)
+    #                 if max_percent < percent:
+    #                     max_percent = percent
+    #                 if percent<int(chosen_percent):
+    #                     continue
+    #                 current_verse = verse_text.split()[0].split(':')[1]
+    #                 current_chapter = verse_text.split()[0].split(':')[0]
+    #                 words = verse_text.split()
+    #                 results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart,int(percent)))
+    #     print(results)
+    #     return results
+    # except FileNotFoundError:
+    #     print("File "+f+" not found.")
+    #     return results
+    
+
 def filter_tuples_by_number(lst, num):
         filtered_list = []
         for item in lst:
             if int(item[-1]) >= int(num):
                 filtered_list.append(item)
         return filtered_list
+search_in_bibleH("אחיה",1,90)

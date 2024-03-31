@@ -65,6 +65,7 @@
     </div>
 
     <script>
+
         window.onload = function() {
     const defaultLanguageSelect = document.getElementById("language");
     generateSelect(defaultLanguageSelect);
@@ -161,8 +162,7 @@ function enableSubmitButton() {
                         return false; // Prevent form submission if input is invalid
                 }
             }
-
-        function onSubmit() {
+        
             let search = document.getElementById("search_term").value;
             localStorage.setItem('search', search);
         }
