@@ -178,48 +178,31 @@ booksH = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 
          'השניה אל התסלוניקים', 'הראשונה אל טימותיאוס', 'השניה אל טימותיאוס', 'אל טיטוס', 'אל פילימון', 'אל העברים', 'אגרת יעקב',
          'הראשונה לכיפא', 'השניה לכיפא', 'הראשונה ליוחנן', 'השניה ליוחנן', 'השלישית ליוחנן', 'איגרת יהודה', 'התגלות']
 
+def send_message(sock, message):
+    message += '\n'  # Append newline character
+    sock.sendall(message.encode('utf-8'))
+
+def receive_message(sock):
+    received_data = b""
+    while True:
+        chunk = sock.recv(1024)
+        if not chunk:
+            break
+        received_data += chunk
+    return received_data.decode('iso-8859-8')
 
 def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books = booksH , f = "bibleH.txt"):
-    host = 'localhost'
-    port = 9998
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        
-        s.connect((host, port))
-        s.sendall(json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)).encode())
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.connect(('localhost', 9998))
 
-    # results = []
-    # max_percent = 0
-    # try:
-    #     with open(f, 'r', encoding='utf-8') as file:
-    #         flag = False
-    #         lines = file.readlines()
-    #         for line in lines:
-    #             if line.startswith('$:'):
-    #                 current_book = line.split(':')[1].strip()
-    #                 if current_book not in chosen_books:
-    #                     flag = False
-    #                     continue
-    #                 else:
-    #                     flag = True
-    #             else:
-    #                 if not flag:
-    #                     continue
-    #                 verse_text = line.strip()
-    #                 verse_parts_list = create_word_groups(num_of_words, verse_text)
-    #                 matchedPart, percent, book, verse = bestMatch(search_term, verse_parts_list, current_book,verse_text)
-    #                 if max_percent < percent:
-    #                     max_percent = percent
-    #                 if percent<int(chosen_percent):
-    #                     continue
-    #                 current_verse = verse_text.split()[0].split(':')[1]
-    #                 current_chapter = verse_text.split()[0].split(':')[0]
-    #                 words = verse_text.split()
-    #                 results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart,int(percent)))
-    #     print(results)
-    #     return results
-    # except FileNotFoundError:
-    #     print("File "+f+" not found.")
-    #     return results
+        # Send a message to the server
+        send_message(sock,json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)))
+        print("sent")
+
+        # Receive and print the server's response
+        response = receive_message(sock)
+        print("Received from server:", response)
+    
     
 
 def filter_tuples_by_number(lst, num):
@@ -228,4 +211,4 @@ def filter_tuples_by_number(lst, num):
             if int(item[-1]) >= int(num):
                 filtered_list.append(item)
         return filtered_list
-search_in_bibleH("אחיה",1,90)
+search_in_bibleH("בן אחיה",2,80)
