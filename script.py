@@ -1,81 +1,7 @@
 from difflib import SequenceMatcher
-import pickle
-import os
+from datetime import datetime,timedelta
 import socket
 import json
-from datetime import datetime,timedelta
-
-f="hashmap_data.pkl"
-
-
-
-def delete_file_content(file_name):
-    try:
-        with open(file_name, 'w') as file:
-            file.truncate(0)  # Truncate the file to remove all content
-        print(f"Content of '{file_name}' has been deleted.")
-    except FileNotFoundError:
-        print(f"File '{file_name}' not found.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-def is_hebrew(text):
-    hebrew_range = (0x0590, 0x05FF)  # Unicode range for Hebrew characters
-    hebrew_chars = [char for char in text if hebrew_range[0] <= ord(char) <= hebrew_range[1]]
-    return len(hebrew_chars) > 0
-
-def load_hashmap_from_file(filename):
-    if os.path.exists(filename) and os.path.getsize(filename) > 0:
-        try:
-            with open(filename, 'rb') as file:
-                return pickle.load(file)
-        except (pickle.UnpicklingError, EOFError, AttributeError, ImportError) as e:
-            print(f"Error loading file: {e}")
-            return {}
-    else:
-        return {}
-
-
-def read_pickle_file(filename):
-    with open(filename, 'rb') as file:
-        data = pickle.load(file)
-        for item in data:
-                print(item)
-
-def append_to_file(string, number):
-    with open('searches.txt', 'a') as file:
-        good_time = datetime.now()+timedelta(hours=2)
-        good_time = good_time.strftime("%d.%m.%Y %H:%M")
-        file.write(f"{string} {number} {good_time}\n")
-
-
-# Save hashmap to file using pickle
-def save_hashmap_to_file(filename, hashmap_data):
-    with open(filename, 'wb') as file:
-        pickle.dump(hashmap_data, file)
-
-
-# Check number and string with hashmap
-def check_number_and_string(string,new):
-    hashmap = load_hashmap_from_file(f)
-    key = (string, new)
-
-    if key in hashmap:
-        return hashmap[key]
-    else:
-        if is_hebrew(string):
-            if new == 1:
-                hashmap[key] = search_in_bibleH(string,count_words(string),85,booksH,'bibleHN.txt')
-            elif new == 0:
-                hashmap[key] = search_in_bibleH(string, count_words(string), 85, booksH, 'bibleH.txt')
-            else:
-                print("mistake")
-        else:
-            hashmap[key] = search_in_bible(string, count_words(string), 85, books)
-
-    save_hashmap_to_file(f, hashmap)  # Save the updated hashmap to the file
-    return hashmap[key]
-
 
 books = ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
     '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra', 'Nehemiah', 'Esther', 'Job', 'Psalm', 'Proverbs',
@@ -184,26 +110,42 @@ def send_message(sock, message):
 
 def receive_message(sock):
     received_data = b""
-    while True:
+    chunk = ''
+    while chunk[-5:]!=b"EOF\r\n":
         chunk = sock.recv(1024)
+        # print(chunkP)
         if not chunk:
             break
         received_data += chunk
+    received_data = received_data[:-5]
     return received_data.decode('iso-8859-8')
 
 def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books = booksH , f = "bibleH.txt"):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect(('localhost', 9998))
-
         # Send a message to the server
         send_message(sock,json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)))
-        print("sent")
-
         # Receive and print the server's response
+        print("ok")
         response = receive_message(sock)
-        print("Received from server:", response)
-    
-    
+        print("great")
+    result = response.split("\r\n")[:-1]
+    tResult = []
+    for res in result:
+            tResult.append(res.split('@'))
+    result = tResult
+    print(result)
+    for res in result:
+        res[5] = int(float(res[5]))
+        # print(res)
+    return result
+
+
+def append_to_file(string, number):
+    with open('searches.txt', 'a') as file:
+        good_time = datetime.now()+timedelta(hours=2)
+        good_time = good_time.strftime("%d.%m.%Y %H:%M")
+        file.write(f"{string} {number} {good_time}\n")
 
 def filter_tuples_by_number(lst, num):
         filtered_list = []
@@ -211,4 +153,3 @@ def filter_tuples_by_number(lst, num):
             if int(item[-1]) >= int(num):
                 filtered_list.append(item)
         return filtered_list
-search_in_bibleH("בן אחיה",2,80)

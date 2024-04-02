@@ -1,10 +1,5 @@
 from flask import Flask, render_template, request
 import script
-from time import sleep
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from bs4 import BeautifulSoup
-import requests
 
 app = Flask(__name__)
 
@@ -27,28 +22,19 @@ def search():
         accuracy = request.form['accuracy']
         script.append_to_file(search_term, accuracy)
         if language == 'English':
-            if int(accuracy)>=85:
-                results = script.check_number_and_string(search_term,0)
-            else:
-                results = script.search_in_bible(search_term,script.count_words(search_term),accuracy,script.books)
+            results = script.search_in_bible(search_term,script.count_words(search_term),accuracy,script.books)
             if results:
                 results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.books)),accuracy)
             return render_template('resultsEnglish.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
 
         elif language == 'Hebrew':
             if version == 'old':
-                if int(accuracy)>=85:
-                    results = script.check_number_and_string(search_term,0)
-                else:
-                    results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleH.txt')
+                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleH.txt')
                 if results:
                     results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
                 return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
             elif version == 'new':
-                if int(accuracy)>=85:
-                    results = script.check_number_and_string(search_term,1)
-                else:
-                    results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleHN.txt')
+                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleHN.txt')
                 if results:
                     results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
                 return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
@@ -57,20 +43,4 @@ def search():
 
 
 if __name__ == '__main__':
-
-    # web = webdriver.Chrome()
-    # url = 'http://www.kirjasilta.net/hadash/Hit.1.html'
-    # web.get(url)
-    # for i in range(1, 29):
-    #     url = 'http://www.kirjasilta.net/hadash/Hit.' + str(i) + '.html'
-    #     response = requests.get(url)
-    #     soup = BeautifulSoup(response.text, 'html.parser')
-    #     paragraphs = soup.find_all('p')
-    #     with open('bibleHNf.txt', 'a', encoding='utf-8') as file:
-    #         for j in range(2, len(paragraphs)):
-    #             text_to_write = web.find_element(By.XPATH, '/html/body/p[' + str(j) + ']').text
-    #             file.write(text_to_write + '\n')
-    #     web.find_element(By.XPATH, '/html/body/p[' + str(j + 1) + ']/a[1]').click()
-    # script.delete_file_content(script.f)
-    # print(script.read_pickle_file("hashmap_data.pkl"))
     app.run(debug=True)

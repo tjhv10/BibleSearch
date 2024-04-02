@@ -1,6 +1,8 @@
 import re
-
+import pickle
+import os
 import script
+
 
 
 def find_chapter(file_path):
@@ -576,3 +578,62 @@ def compare_numbers_in_patterns(file_path1, file_path2):
         print(f"The patterns start differing at line number: {diff_line + 1}")
         print(f"File 1: {numbers_lines1[diff_line]}")
         print(f"File 2: {numbers_lines2[diff_line]}")
+# def check_number_and_string(string,new):
+#     hashmap = load_hashmap_from_file(f)
+#     key = (string, new)
+
+#     if key in hashmap:
+#         return hashmap[key]
+#     else:
+#         if is_hebrew(string):
+#             if new == 1:
+#                 hashmap[key] = search_in_bibleH(string,count_words(string),85,booksH,'bibleHN.txt')
+#             elif new == 0:
+#                 hashmap[key] = search_in_bibleH(string, count_words(string), 85, booksH, 'bibleH.txt')
+#             else:
+#                 print("mistake")
+#         else:
+#             hashmap[key] = search_in_bible(string, count_words(string), 85, books)
+
+#     save_hashmap_to_file(f, hashmap)  # Save the updated hashmap to the file
+#     return hashmap[key]
+# def is_hebrew(text):
+#     hebrew_range = (0x0590, 0x05FF)  # Unicode range for Hebrew characters
+#     hebrew_chars = [char for char in text if hebrew_range[0] <= ord(char) <= hebrew_range[1]]
+#     return len(hebrew_chars) > 0
+
+# def load_hashmap_from_file(filename):
+#     if os.path.exists(filename) and os.path.getsize(filename) > 0:
+#         try:
+#             with open(filename, 'rb') as file:
+#                 return pickle.load(file)
+#         except (pickle.UnpicklingError, EOFError, AttributeError, ImportError) as e:
+#             print(f"Error loading file: {e}")
+#             return {}
+#     else:
+#         return {}
+
+
+# def read_pickle_file(filename):
+#     with open(filename, 'rb') as file:
+#         data = pickle.load(file)
+#         for item in data:
+#                 print(item)
+
+
+
+
+# # Save hashmap to file using pickle
+# def save_hashmap_to_file(filename, hashmap_data):
+#     with open(filename, 'wb') as file:
+#         pickle.dump(hashmap_data, file)
+
+# def delete_file_content(file_name):
+#     try:
+#         with open(file_name, 'w') as file:
+#             file.truncate(0)  # Truncate the file to remove all content
+#         print(f"Content of '{file_name}' has been deleted.")
+#     except FileNotFoundError:
+#         print(f"File '{file_name}' not found.")
+#     except Exception as e:
+#         print(f"An error occurred: {e}")        

@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "hi",
+            "request": "launch",
+            "mainClass": "hi",
+            "projectName": "BibleSearch_92ed763d"
+        },
+        {
+            "type": "java",
             "name": "Script",
             "request": "launch",
             "mainClass": "Script",
