@@ -22,7 +22,7 @@ def search():
         accuracy = request.form['accuracy']
         script.append_to_file(search_term, accuracy)
         if language == 'English':
-            results = script.search_in_bible(search_term,script.count_words(search_term),accuracy,script.books)
+            results = script.search_in_bible(search_term,script.count_words(search_term),accuracy)
             if results:
                 results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.books)),accuracy)
             return render_template('resultsEnglish.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)

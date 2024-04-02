@@ -65,7 +65,6 @@
     </div>
 
     <script>
-
         window.onload = function() {
     const defaultLanguageSelect = document.getElementById("language");
     generateSelect(defaultLanguageSelect);
@@ -80,10 +79,11 @@ function generateSelect(selectElement) {
         version.id = "version";
         version.className = "form-input";
 
-        const option2 = document.createElement("option");
-        option2.value = "new";
-        option2.textContent = "תרגום מודרני";
-        version.appendChild(option2);
+        // const option2 = document.createElement("option");
+        // option2.value = "new";
+        // option2.textContent = "תרגום מודרני";
+        // version.appendChild(option2);
+
         const option1 = document.createElement("option");
         option1.value = "old";
         option1.textContent = "דליטש";
@@ -162,9 +162,11 @@ function enableSubmitButton() {
                         return false; // Prevent form submission if input is invalid
                 }
             }
-        
+
+        function onSubmit() {
             let search = document.getElementById("search_term").value;
             localStorage.setItem('search', search);
+        }
         function resetForm() {
         // Reset the language selection to the default value
         languageSelect.value = 'Hebrew';

@@ -61,40 +61,22 @@ def bestMatch(string, list_of_str, current_book,current_verse):
                 maxMatchWord = word
                 spm = sp
     return maxMatchWord, spm,current_book,current_verse
-def search_in_bible(search_term, num_of_words, chosen_percent, chosen_books):
-    results = []
-    max_percent = 0
-    try:
-        with open("bible.txt", 'r') as file:
-            flag = False
-            lines = file.readlines()
-            for line in lines:
-                if line.startswith('T:'):
-                    current_book = line.split(':')[1].strip()
-                    if current_book not in chosen_books:
-                        flag = False
-                        continue
-                    else:
-                        flag = True
-                else:
-                    if not flag:
-                        continue
-                    verse_text = line.strip()
-                    verse_parts_list = create_word_groups(num_of_words, verse_text)
-                    matchedPart,percent, book,verse = bestMatch(search_term, verse_parts_list, current_book,verse_text)
-                    if max_percent < percent:
-                        max_percent = percent
-                    if percent<int(chosen_percent):
-                        continue
-                    current_verse = verse_text.split()[0].split(':')[1]
-                    current_chapter = verse_text.split()[0].split(':')[0]
-                    words = verse_text.split()
-                    results.append((current_book, current_chapter, current_verse, ' '.join(words[1:]), matchedPart, int(percent)))
-        return results
-
-    except FileNotFoundError:
-        print("File 'bible.txt' not found.")
-        return results
+def search_in_bible(search_term, num_of_words, chosen_percent):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.connect(('localhost', 9998))
+        # Send a message to the server
+        send_message(sock,json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)+"@bible.txt"))
+        # Receive and print the server's response
+        response = receive_message(sock)
+    result = response.split("\r\n")[:-1]
+    tResult = []
+    for res in result:
+            tResult.append(res.split('@'))
+    result = tResult
+    for res in result:
+        res[5] = int(float(res[5]))
+        # print(res)
+    return result
 
 booksH = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים', 'יהושוע', 'שופטים', 'שמואל א', 'שמואל ב', 'מלכים א', 'מלכים ב', 'ישעיה',
          'ירמיה', 'יחזקאל', 'הושע', 'יואל', 'עמוס', 'עובדיה', 'יונה', 'מיכה', 'נחום', 'חבקוק', 'צפניה', 'חגי', 'זכריה',
@@ -150,3 +132,4 @@ def filter_tuples_by_number(lst, num):
             if int(item[-1]) >= int(num):
                 filtered_list.append(item)
         return filtered_list
+# print(search_in_bible("gray",1,75))
