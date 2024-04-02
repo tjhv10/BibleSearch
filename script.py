@@ -132,4 +132,4 @@ def filter_tuples_by_number(lst, num):
             if int(item[-1]) >= int(num):
                 filtered_list.append(item)
         return filtered_list
-# print(search_in_bible("gray",1,75))
+print(search_in_bible("gray",1,75))
