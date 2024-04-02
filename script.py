@@ -113,22 +113,19 @@ def receive_message(sock):
     chunk = ''
     while chunk[-5:]!=b"EOF\r\n":
         chunk = sock.recv(1024)
-        # print(chunkP)
         if not chunk:
             break
         received_data += chunk
     received_data = received_data[:-5]
     return received_data.decode('iso-8859-8')
 
-def search_in_bibleH(search_term, num_of_words, chosen_percent, chosen_books = booksH , f = "bibleH.txt"):
+def search_in_bibleH(search_term, num_of_words, chosen_percent,f):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.connect(('localhost', 9998))
         # Send a message to the server
-        send_message(sock,json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)))
+        send_message(sock,json.dumps(search_term+"@"+str(num_of_words)+"@"+str(chosen_percent)+"@"+f))
         # Receive and print the server's response
-        print("ok")
         response = receive_message(sock)
-        print("great")
     result = response.split("\r\n")[:-1]
     tResult = []
     for res in result:

@@ -29,12 +29,12 @@ def search():
 
         elif language == 'Hebrew':
             if version == 'old':
-                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleH.txt')
+                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,'bibleH.txt')
                 if results:
                     results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
                 return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)
             elif version == 'new':
-                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,script.booksH,'bibleHN.txt')
+                results = script.search_in_bibleH(search_term,script.count_words(search_term),accuracy,'bibleHN.txt')
                 if results:
                     results = script.filter_tuples_by_number(script.filter_results_by_books(results,script.extract_sublist(start_book,end_book,script.booksH)),accuracy)
                 return render_template('resultsHebrew.html', results=sorted(results, key=lambda x: x[5],reverse=True), language=language)

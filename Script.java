@@ -256,7 +256,8 @@ public class Script {
                 int numWords = Integer.parseInt(parts[1]);
                 int chosenPercent = Integer.parseInt(parts[2].replaceAll("^\\s*\"|\"\\s*$", ""));
                 List<String> chosenBooks = BooksH;
-                String filePath = "BibleH.txt";
+                String filePath = parts[3].replaceAll("^\\s*\"|\"\\s*$", "");
+                System.out.println(filePath);
                 List<String> results = searchInBibleH(searchTerm, numWords, chosenPercent, chosenBooks, filePath);
                 for (String result : results) {
                     out.println(result);
